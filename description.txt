@@ -1,0 +1,23 @@
+### Główny problem
+Wysyłanie tak zwanego raportu tygodniowego z 3 zdjęciami oraz wypełnionym formularzem (waga, wym: brzuch, klatka piersiowa, biceps lewy, biceps prawy, udo lewe, udo prawe, zaznaczyć ile dni było robione cardio - 7 maksymalnie.  Krótki dodatkowa informacja opcjonalna). Te dane będą wysyłane do api z kolei drugi panel gdzie zaloguje się trener będzie miał dostęp do swoich podopiecznych i ich raportów. Aplikacja w formie PWA aby można było utworzyć ikonkę na pulpicie urządzenia mobilnego. 
+
+### Najmniejszy zestaw funkcjonalności
+- Użytkownik “klient” loguje się numerem telefonu i hasłem
+- Użytkownik “klient” wysyła dane 3 zdjęciami oraz wypełnionym formularzem (waga, wym: brzuch, klatka piersiowa, biceps lewy, biceps prawy, udo lewe, udo prawe, zaznaczyć ile dni było robione cardio - 7 maksymalnie.  Krótki dodatkowa informacja opcjonalna)
+- Użytkownik “Trener” ma dostęp do listy swoich “klientów”
+- W panelu “Trener” w zakładce konkretnego podopiecznego widzimy listę raportów
+- z listy raportów dostęp do detali raportu
+- W zakładce podopiecznego poza listą widzimy też wykresy dla wysyłanych wartości. Prezentacja np. Czy waga rośnie czy maleje, czy biceps lewy rośnie czy maleje, czy udo lewe rośnie czy maleje itd.
+- Dostęp do 3 ostatnich zdjęć oraz możliwość porównania ze zdjęciem z wybranego raportu. 
+- Raporty mają być oznaczone datą i posortowane datami 
+- 
+
+### Co NIE wchodzi w zakres MVP
+- na podstawie przypisanej gramatury żywienia dla podopiecznego generowanie propozycji posiłków przy pomocy AI
+- System subskrypcyjny
+- Aplikacje mobilne (na początek tylko web)
+
+### Kryteria sukcesu
+- Klient może wpisać i wysłać swoje dane do przypisanego mu trenera. 
+- Trener może zobaczyć listę swoich klientóww, i otworzyć kartę klienta
+- Karta klienta posiada wymione informacje w Najmniejszy zestaw funkcjonalności

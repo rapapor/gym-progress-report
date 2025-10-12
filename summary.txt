@@ -1,0 +1,69 @@
+```markdown
+<conversation_summary>
+<decisions>
+1. Konto klienta zakłada trener; system generuje jednorazowe hasło i link aktywacyjny, przy pierwszym logowaniu klient ustawia własne hasło.
+2. Konto trenera zakłada super admin, email i hasło jednorazowe z wymuszoną zmianą po pierwszym logowaniu. 
+3. Reset hasła odbywa się wyłącznie przez trenera (brak odzyskiwania SMS/e-mail).  
+4. Relacja: jeden trener → wielu klientów; klient ma tylko jednego trenera.  
+5. PWA dotyczy wyłącznie panelu klienta; panel trenera działa jako klasyczna web-app.  
+6. Przy braku sieci klient widzi komunikat, a akcje zapisu są zablokowane.  
+7. Klient może wysłać maksymalnie 2 raporty tygodniowo; po wysłaniu raport staje się tylko-do-odczytu.  
+8. KPI: liczba klientów, którzy przesłali raport w danym tygodniu; system wyróżnia klientów bez raportu.  
+9. Super-admin posiada pełną kontrolę i wgląd we wszystkie dane i użytkowników.  
+10. Zdjęcia i dane przechowywane w Supabase Storage do 6 mies., potem muszą być usunięte.  
+11. Wsparcie jednostek metrycznych z abstrakcją umożliwiającą łatwe dodanie innych jednostek; przygotować aplikację pod i18n oraz podstawowe wymagania WCAG.  
+</decisions>
+
+<matched_recommendations>
+1. Workflow z jednorazowym linkiem/OTP do aktywacji konta (zaakceptowany).  
+2. Limity rozmiaru i kompresja zdjęć (zaakceptowane „według rekomendacji”).  
+3. KPI „Weekly Reporting Compliance Rate” oraz oznaczenie klientów bez raportu (zaakceptowane).  
+4. Raport tylko-do-odczytu po finalnym wysłaniu z możliwością max 2 raportów tygodniowo (częściowo przyjęte).  
+5. Granulowane uprawnienia super-admina – przyjęto pełną kontrolę.  
+6. Retencja danych w Supabase z limitowanym okresem przechowywania (6 mies.) i koniecznością usuwania.  
+7. Blokada akcji zapisu offline, UI read-only (zaakceptowane).  
+8. Abstrakcja jednostek miary i gotowość do i18n (przyjęto).  
+</matched_recommendations>
+
+<prd_planning_summary>
+a. Główne wymagania funkcjonalne  
+• Rejestracja klienta przez trenera z jednorazowym linkiem i generowanym hasłem.  
+• Logowanie klientów i trenerów (telefon/hasło); super-admin z pełnym dostępem.  
+• Klient: PWA umożliwiająca wysyłkę tygodniowego raportu zawierającego 3 zdjęcia + formularz pomiarów; limit 2 raportów/tydzień.  
+• Trener: panel web z listą swoich klientów, dashboardami postępów, listą i detalami raportów, wykresami liniowymi.  
+• System oznacza klientów bez raportu w bieżącym tygodniu.  
+• Supabase: baza danych, storage zdjęć (przechowywanie 6 mies.), autentykacja; zgody RODO przy pierwszym logowaniu.  
+• Super-admin: zarządzanie trenerami/klientami, pełen wgląd w dane.  
+• Obsługa offline w PWA ograniczona do podglądu; zapis wymaga sieci.  
+• Gotowość i18n oraz podstawowe WCAG; domyślnie jednostki metryczne z abstrahowaniem innych.  
+
+b. Kluczowe historie użytkownika  
+• Jako trener chcę dodać nowego klienta i wysłać mu link aktywacyjny na wpisany email, aby rozpocząć współpracę.  
+• Jako klient chcę wypełnić i wysłać tygodniowy raport (max 2), aby mój trener śledził postępy.  
+• Jako trener chcę przeglądać listę klientów i widzieć, którzy nie wysłali raportu w tym tygodniu.  
+• Jako trener chcę analizować wykresy pomiarów klienta, aby podejmować decyzje treningowe.  
+• Jako super-admin chcę zarządzać wszystkimi użytkownikami i mieć wgląd we wszystkie dane.  
+
+c. Kryteria sukcesu i metryki  
+• Weekly Reporting Compliance Rate ≥ 80 % (klienci z ≥ 1 raportem w tygodniu).  
+• Średni czas aktywacji konta klienta < 24 h od utworzenia.  
+• ≤ 5 % zduplikowanych/niekompletnych raportów na tydzień.  
+• Dostępność PWA klienta ≥ 99 %.  
+
+d. Nierozwiązane kwestie / obszary dalszego rozwoju  
+• Automatyczny proces usuwania zdjęć po 6 mies. (harmonogram, soft-delete vs hard-delete).  
+• Dokładna specyfikacja limitów zdjęć (rozmiar, format, rozdzielczość) i kompresji.  
+• Brak zewnętrznego resetu hasła może wpłynąć na UX - wymaga obserwacji.  
+• Szczegółowy zakres i tryb pracy super-admina vs potrzeby prywatności.  
+• Brak planu powiadomień – decyzja przesunięta, warto monitorować KPI i wrócić do tematu.  
+</prd_planning_summary>
+
+<unresolved_issues>
+1. Implementacja automatycznego kasowania zdjęć po 6 mies. (mechanizm i harmonogram).  
+2. Precyzyjne parametry techniczne dla uploadu i kompresji zdjęć.  
+3. Potencjalne obciążenie trenerów resetem haseł – rozważyć self-service w przyszłości.  
+4. Uszczegółowienie zakresu danych dostępnych super-adminowi w kontekście RODO.  
+5. Brak strategii backupów – choć uznano je za „niepotrzebne”, może wymagać ponownej oceny.  
+</unresolved_issues>
+</conversation_summary>
+```
