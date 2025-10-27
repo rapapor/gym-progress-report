@@ -1,0 +1,53 @@
+<conversation_summary>
+<decisions>
+1. Stosujemy tabelę mapującą `trainer_client` z kolumnami `started_at TIMESTAMP` i `is_active BOOLEAN`; nie tworzymy tabeli historii przypisań.  
+2. Autoryzacja przez Supabase Auth – identyfikator `auth.uid()` jest kluczem głównym tabeli `users`; brak dodatkowego surrogate ID.  
+3. Pomiary ciała przechowujemy w jawnych kolumnach `NUMERIC(6,2)` (w jednostkach metrycznych); dodamy walidację `CHECK value ≥ 0`.  
+4. Pole `cardio_days` będzie `INTEGER` z walidacją `CHECK 0 ≤ value ≤ 7`.  
+5. Tabela `reports` otrzyma kolumny `week_number` i `year` (nadawane przez trigger) oraz unikalność `(client_id, week_number, year, sequence)` z `CHECK sequence IN (0,1)`.  
+6. Obrazy w tabeli `report_images` z metadanymi `JSONB` (`size_bytes`, `width`, `height`); walidacja rozmiaru ≤ 10 MB; procedura retencji ustawia `is_deleted`, a potem usuwa pliki.  
+7. Wprowadzamy `deleted_at TIMESTAMP` w `clients`, `reports`, `report_images`; kaskadowe soft-delete realizowane trigrami BEFORE DELETE.  
+8. Indeksy:  
+   • `trainer_client` (trainer_id, is_active, started_at DESC)  
+   • `reports` (client_id, created_at DESC) + BRIN(created_at)  
+   • BRIN(created_at) na `report_images`.  
+9. RLS: super-admin pełny dostęp; trener widzi tylko swoich aktywnych klientów i ich dane; klient widzi wyłącznie własne rekordy.  
+10. Dashboard trenera opiera się na zmaterializowanym widoku / indeksie częściowym dla raportów z bieżącego tygodnia.
+
+</decisions>
+
+<matched_recommendations>
+1. Jawne kolumny NUMERIC dla pomiarów + CHECK ≥ 0.  
+2. INTEGER `cardio_days` z `CHECK 0-7`.  
+3. Kolumny `week_number`, `year` + trigger; ograniczenie 2 raportów/tydzień poprzez UNIQUE & CHECK `sequence`.  
+4. Osobna tabela `report_images` z metadanymi JSONB i walidacją rozmiaru ≤ 10 MB.  
+5. Soft-delete przez `deleted_at` i kaskadowe trigramy.  
+6. Kompozytowy indeks (trainer_id, is_active, started_at DESC) dla listy klientów.  
+7. BRIN-indeksy na kolumnach `created_at` w dużych tabelach.  
+8. Retencja obrazów > 180 dni realizowana funkcją cron, która ustawia `is_deleted` i usuwa pliki.  
+9. Polityki RLS oparte na `auth.uid()` dla ról super-admin, trainer, client.  
+10. Dashboardowe widoki / indeksy częściowe dla raportów z bieżącego tygodnia.
+
+</matched_recommendations>
+
+<database_planning_summary>
+Planowany schemat obejmuje główne encje: `users` (rola, dane kontaktowe), `clients`, `trainers`, tabelę mapującą `trainer_client`, `reports`, `report_images`.  
+Relacje:  
+• jeden trener ↔ wielu klientów poprzez `trainer_client`;  
+• jeden klient ↔ wiele raportów;  
+• jeden raport ↔ do trzech obrazów.  
+
+Bezpieczeństwo: Supabase Auth zapewnia uwierzytelnianie, a polityki RLS sterują dostępem (super-admin pełny, trener ograniczony do swoich klientów, klient tylko do siebie). Soft-delete i kolumny `is_active` pozwalają zachować historię bez fizycznego usuwania danych. Walidacje CHECK zabezpieczają integralność (np. limit dwóch raportów tygodniowo, wartości pomiarów ≥ 0, kardio 0-7, rozmiar obrazów ≤ 10 MB).
+
+Skalowalność i wydajność: kompozytowe i BRIN-indeksy przyspieszą typowe zapytania, a zmaterializowany widok / indeks częściowy odciąży dashboard trenera. Partycjonowanie pozostaje w rezerwie – wprowadzenie, gdy liczba raportów przekroczy ustalony próg. Retencja obrazów realizowana zadaniem cron minimalizuje rozrost Storage.
+
+</database_planning_summary>
+
+<unresolved_issues>
+1. Ostateczny format pola `note` (długość limitowana vs pełny TEXT) nie został potwierdzony.  
+2. Synchronizacja ról z `auth.users` do lokalnej tabeli `users` (Trigger czy brak duplikacji) wymaga doprecyzowania.  
+3. Czy implementować szczegółową historię zmian przypisań klient-trener w przyszłości (tabela `trainer_client_history`).  
+4. Konkretna definicja POLICIES RLS (INSERT/UPDATE) dla trenerów w kontekście możliwej edycji danych klienta.  
+5. Strategia przechowywania jednostek miary na przyszłość (enum czy tabela słownikowa) do obsługi systemu imperialnego.
+</unresolved_issues>
+</conversation_summary>

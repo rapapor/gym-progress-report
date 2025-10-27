@@ -1,94 +1,86 @@
-# 10x Astro Starter
+# Gym Progress Report
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+> Web application enabling personal trainers to collect and analyze weekly progress reports from their clients.
+
+## Table of Contents
+1. [Project Description](#project-description)
+2. [Tech Stack](#tech-stack)
+3. [Getting Started Locally](#getting-started-locally)
+4. [Available Scripts](#available-scripts)
+5. [Project Scope](#project-scope)
+6. [Project Status](#project-status)
+7. [License](#license)
+
+## Project Description
+Gym Progress Report is a **Progressive Web App (PWA)** and trainer dashboard that streamlines the workflow of collecting progress data. Clients submit a weekly report containing three photos and body measurements, while trainers gain a consolidated view of trends and missing reports. A super-admin role has full system oversight.
 
 ## Tech Stack
+- **Frontend**: Astro 5, React 19, TypeScript 5
+- **Styling**: Tailwind 4, Shadcn/ui
+- **Backend-as-a-Service**: Supabase (PostgreSQL, Auth, Storage)
+- **AI Integration**: OpenRouter.ai for LLM access
+- **Testing**: Vitest, React Testing Library, Playwright, MSW
+- **CI/CD & Hosting**: GitHub Actions, Docker image on DigitalOcean
+- **Tooling**: ESLint, Prettier, Husky, lint-staged
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
-
-## Prerequisites
-
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
-
-## Getting Started
-
-1. Clone the repository:
+## Getting Started Locally
+### Prerequisites
+- **Node.js 22.14.0** (see `.nvmrc`)
+- **pnpm** or **npm** (examples use `npm`)
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
-
-2. Install dependencies:
-
-```bash
+# install dependencies
 npm install
-```
 
-3. Run the development server:
-
-```bash
+# start development server
 npm run dev
 ```
+The app is now live at <http://localhost:3000> with hot-reloading.
 
-4. Build for production:
-
+To build for production:
 ```bash
 npm run build
 ```
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
-
-## Project Structure
-
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
+Then preview the build locally:
+```bash
+npm run preview
 ```
 
-## AI Development Support
+## Available Scripts
+| Script | Description |
+|--------|-------------|
+| `dev` | Start Astro in development mode with hot reload |
+| `build` | Build a production-ready static site |
+| `preview` | Preview the production build locally |
+| `astro` | Run arbitrary Astro CLI commands |
+| `lint` | Lint all source files with ESLint |
+| `lint:fix` | Lint and automatically fix issues |
+| `format` | Format code with Prettier |
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+## Project Scope
+**In scope (MVP)**
+- Roles: super-admin, trainer, client
+- Client PWA for submitting reports (online-only writes)
+- Trainer web panel for overview and visualisation
+- Image upload (max 3 per report) with compression & 6-month retention
+- KPI dashboard highlighting clients without a report this week
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+**Out of scope (MVP)**
+- Native mobile apps
+- AI-generated nutrition plans
+- Paid subscriptions
+- Push/SMS/e-mail notifications
+- Self-service password reset
+- Advanced analytics & PDF export
 
-### Cursor IDE
+## Project Status
+🚧 **Work in progress** – core MVP features are under active development.
 
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+Planned milestones:
+1. Authentication & role management
+2. Client PWA submission flow
+3. Trainer dashboard visualisations
+4. Super-admin oversight tools
 
 ## License
-
-MIT
+TBD – the project currently has no formal license. Consider adding an OSI-approved license (e.g. MIT) before public release.

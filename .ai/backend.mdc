@@ -1,0 +1,10 @@
+---
+alwaysApply: false
+---
+## Backend and database
+
+- Use Supabase for backend services, including authentication and database interactions
+- follow supabase guidlines for security and performance
+- use zod schemas to validate data exchanged with the backend
+- use supabase from context.locals in astro routes instead of importing supabaseclient directly
+- use supabaseClient type from 'src/db/supabase.client.ts', not from @supabase/supabase-js'
