@@ -233,6 +233,58 @@ export const POST: APIRoute = createApiRoute(async ({ request, params, supabase,
  * - 500: Server error
  */
 export const GET: APIRoute = createApiRoute(async ({ request, params, supabase, user }) => {
+  /* ------------------------------------------------------------------ */
+  /* Development mock – return fake data without hitting Supabase       */
+  /* ------------------------------------------------------------------ */
+  if (import.meta.env.DEV) {
+    const clientId = params.clientId as string;
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get("page")) || 1;
+    const pageSize = Number(url.searchParams.get("pageSize")) || 20;
+
+    // create mock list items deterministically based on page
+    const totalItems = 7; // small fake dataset
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const startIndex = (page - 1) * pageSize;
+    const slice = Array.from({ length: Math.min(pageSize, totalItems - startIndex) }, (_, i) => {
+      const idx = startIndex + i;
+      const now = new Date();
+      const created = new Date(now.getTime() - idx * 86400 * 1000); // each earlier day
+      return {
+        id: crypto.randomUUID(),
+        client_id: clientId,
+        year: created.getUTCFullYear(),
+        week_number: Math.ceil(
+          ((Date.UTC(created.getUTCFullYear(), created.getUTCMonth(), created.getUTCDate()) -
+            Date.UTC(created.getUTCFullYear(), 0, 1)) /
+            86400000 +
+            1) /
+            7
+        ),
+        sequence: idx % 2,
+        weight: 80 - idx,
+        waist: 90 - idx,
+        chest: 100 - idx,
+        biceps_left: 40,
+        biceps_right: 41,
+        thigh_left: 55,
+        thigh_right: 56,
+        cardio_days: (idx % 7) as number,
+        created_at: created.toISOString(),
+        deleted_at: null,
+      } as ReportListItemDTO;
+    });
+
+    const meta = {
+      page,
+      pageSize,
+      totalPages,
+      totalItems,
+    } as PaginationMeta;
+
+    return createPaginatedResponse(slice, meta);
+  }
+
   // Authentication & Authorization
   const authenticatedUser = requireAuth(user);
 

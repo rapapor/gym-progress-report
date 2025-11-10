@@ -1,10 +1,5 @@
 import type { APIRoute } from "astro";
-import {
-  createApiRoute,
-  requireAuth,
-  UuidParamSchema,
-  ApiException,
-} from "../../../lib/api-helpers";
+import { createApiRoute, requireAuth, UuidParamSchema, ApiException } from "../../../lib/api-helpers";
 
 /**
  * Helper function to check if user can delete image
@@ -14,11 +9,12 @@ async function checkImageDeleteAccess(
   userId: string,
   userRole: string,
   imageId: string
-): Promise<{ hasAccess: boolean; image?: any }> {
+): Promise<{ hasAccess: boolean; image?: unknown }> {
   // Get image with report and client info
   const { data: image, error } = await supabase
     .from("report_images")
-    .select(`
+    .select(
+      `
       id,
       report_id,
       storage_path,
@@ -26,7 +22,8 @@ async function checkImageDeleteAccess(
       reports!inner (
         client_id
       )
-    `)
+    `
+    )
     .eq("id", imageId)
     .eq("is_deleted", false)
     .single();
@@ -113,13 +110,14 @@ export const DELETE: APIRoute = createApiRoute(async ({ params, supabase, user }
     // For now, we'll just mark it as deleted in the database
     // The actual file cleanup can be handled by a scheduled function
     try {
-      const { error: storageError } = await supabase.storage
-        .from("report-images")
-        .remove([image.storage_path]);
+      const { error: storageError } = await supabase.storage.from("report-images").remove([image.storage_path]);
 
       if (storageError) {
         // eslint-disable-next-line no-console
-        console.warn("Warning: Failed to delete image from storage, but database record was marked as deleted:", storageError);
+        console.warn(
+          "Warning: Failed to delete image from storage, but database record was marked as deleted:",
+          storageError
+        );
         // Don't fail the request - the database record is marked as deleted
       }
     } catch (storageError) {

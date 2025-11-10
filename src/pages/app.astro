@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import DashboardPage from "../components/dashboard/DashboardPage";
+
+export const prerender = false; // dynamic route, served for authenticated clients only
+---
+
+<Layout title="Moje raporty">
+  <!-- DashboardPage is a React component; skip SSR because it relies on browser-only APIs -->
+  <DashboardPage client:only="react" />
+</Layout>

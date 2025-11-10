@@ -94,12 +94,7 @@ export const GET: APIRoute = createApiRoute(async ({ request, params, supabase, 
   const { id: clientId } = UuidParamSchema.parse({ id: params.clientId });
 
   // Check authorization
-  const hasAccess = await checkTrendsAccess(
-    supabase,
-    authenticatedUser.id,
-    authenticatedUser.role,
-    clientId
-  );
+  const hasAccess = await checkTrendsAccess(supabase, authenticatedUser.id, authenticatedUser.role, clientId);
 
   if (!hasAccess) {
     throw new ApiException(403, {
@@ -127,7 +122,16 @@ export const GET: APIRoute = createApiRoute(async ({ request, params, supabase, 
   const { metrics } = TrendsQuerySchema.parse(queryParams);
 
   // Define all possible metrics
-  const allMetrics = ["weight", "waist", "chest", "biceps_left", "biceps_right", "thigh_left", "thigh_right", "cardio_days"];
+  const allMetrics = [
+    "weight",
+    "waist",
+    "chest",
+    "biceps_left",
+    "biceps_right",
+    "thigh_left",
+    "thigh_right",
+    "cardio_days",
+  ];
   const requestedMetrics = metrics || allMetrics;
 
   // Build select clause for requested metrics
@@ -162,10 +166,10 @@ export const GET: APIRoute = createApiRoute(async ({ request, params, supabase, 
   // Populate arrays with non-null values
   reports.forEach((report) => {
     requestedMetrics.forEach((metric) => {
-      const value = report[metric];
+      const value = report[metric as keyof typeof report];
       if (value !== null && value !== undefined) {
         const trendsArray = trends[metric as keyof TrendsDTO] as number[];
-        trendsArray.push(value);
+        trendsArray.push(Number(value));
       }
     });
   });
@@ -174,9 +178,14 @@ export const GET: APIRoute = createApiRoute(async ({ request, params, supabase, 
   Object.keys(trends).forEach((key) => {
     const trendsKey = key as keyof TrendsDTO;
     if (trends[trendsKey] && (trends[trendsKey] as number[]).length === 0) {
-      delete trends[trendsKey];
+      trends[trendsKey] = undefined;
     }
   });
 
-  return createSuccessResponse(trends);
+  // Filter out undefined values
+  const filteredTrends = Object.fromEntries(
+    Object.entries(trends).filter(([, value]) => value !== undefined)
+  ) as TrendsDTO;
+
+  return createSuccessResponse(filteredTrends);
 });

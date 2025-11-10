@@ -232,7 +232,11 @@ export const ImageUploadRequestSchema = z.object({
   contentType: z.enum(["image/jpeg", "image/png"], {
     errorMap: () => ({ message: "Content type must be image/jpeg or image/png" }),
   }),
-  size: z.number().int().min(1, "File size must be positive").max(5 * 1024 * 1024, "File size cannot exceed 5MB"),
+  size: z
+    .number()
+    .int()
+    .min(1, "File size must be positive")
+    .max(5 * 1024 * 1024, "File size cannot exceed 5MB"),
 });
 
 export const TrendsQuerySchema = z.object({
@@ -246,11 +250,21 @@ export const TrendsQuerySchema = z.object({
     .refine(
       (metrics) => {
         if (!metrics) return true;
-        const validMetrics = ["weight", "waist", "chest", "biceps_left", "biceps_right", "thigh_left", "thigh_right", "cardio_days"];
+        const validMetrics = [
+          "weight",
+          "waist",
+          "chest",
+          "biceps_left",
+          "biceps_right",
+          "thigh_left",
+          "thigh_right",
+          "cardio_days",
+        ];
         return metrics.every((metric) => validMetrics.includes(metric));
       },
       {
-        message: "Invalid metrics. Valid options: weight, waist, chest, biceps_left, biceps_right, thigh_left, thigh_right, cardio_days",
+        message:
+          "Invalid metrics. Valid options: weight, waist, chest, biceps_left, biceps_right, thigh_left, thigh_right, cardio_days",
       }
     ),
 });

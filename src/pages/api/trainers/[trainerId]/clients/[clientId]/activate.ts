@@ -2,7 +2,6 @@ import type { APIRoute } from "astro";
 import {
   createApiRoute,
   requireAuth,
-  requireRole,
   UuidParamSchema,
   createSuccessResponse,
   ApiException,
